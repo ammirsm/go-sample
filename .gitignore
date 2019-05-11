@@ -107,4 +107,7 @@ modules.xml
 # Sonarlint plugin
 .idea/sonarlint
 
+.gitignore
 # End of https://www.gitignore.io/api/go,intellij+all
+
+.DS_Store
