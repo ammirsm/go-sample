@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -17,7 +18,25 @@ func allTransactions(w http.ResponseWriter, r *http.Request) {
 }
 
 func allCards(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "All Cards is here")
+	db = openDb(db)
+	defer db.Close()
+	var all_cards []Card
+
+	// we should got user from token but I just mock this up
+	var user User
+	db.First(&user,User{Email:"amir.saiedmehr@gmail.com"})
+
+	var cards []Card
+	db.Preload("Account.User").Find(&cards)
+
+	for i,_ := range cards{
+
+		if cards[i].Account.UserId == int(user.ID){
+			all_cards = append(all_cards,cards[i])
+		}
+	}
+
+	json.NewEncoder(w).Encode(all_cards)
 }
 
 func mainPage(w http.ResponseWriter, r *http.Request){
@@ -32,8 +51,8 @@ func handleRequests() {
 	log.Fatal(http.ListenAndServe(":8081", myRouter))
 }
 
-
 func main() {
 	fmt.Println("Server is up")
+	initialMigration()
 	handleRequests()
 }
