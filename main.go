@@ -8,19 +8,40 @@ import (
 
 	"github.com/gorilla/mux"
 )
+import "strconv"
+
 
 
 func allTransactions(w http.ResponseWriter, r *http.Request) {
+	db = openDb(db)
+	defer db.Close()
+
 	vars := mux.Vars(r)
 	CardId := vars["card_id"]
-	fmt.Println(CardId)
-	fmt.Fprintf(w, "All Transaction is here")
+	CardIdInt, _ := strconv.ParseInt(CardId, 0, 64)
+
+	var card Card
+	db.First(&card,int(CardIdInt))
+
+	var allTransactions []Transaction
+	var transactions []Transaction
+
+	db.Preload("Card").Find(&transactions)
+
+	//TODO: Should change this to some new query that get the cards from database
+	for i := range transactions{
+		if transactions[i].CardId == int(card.ID){
+			allTransactions = append(allTransactions,transactions[i])
+		}
+	}
+
+	json.NewEncoder(w).Encode(allTransactions)
 }
 
 func allCards(w http.ResponseWriter, r *http.Request) {
 	db = openDb(db)
 	defer db.Close()
-	var all_cards []Card
+	var allCards []Card
 
 	// we should got user from token but I just mock this up
 	var user User
@@ -31,13 +52,13 @@ func allCards(w http.ResponseWriter, r *http.Request) {
 
 
 	//TODO: Should change this to some new query that get the cards from database
-	for i,_ := range cards{
+	for i := range cards{
 		if cards[i].Account.UserId == int(user.ID){
-			all_cards = append(all_cards,cards[i])
+			allCards = append(allCards,cards[i])
 		}
 	}
 
-	json.NewEncoder(w).Encode(all_cards)
+	json.NewEncoder(w).Encode(allCards)
 }
 
 func mainPage(w http.ResponseWriter, r *http.Request){
