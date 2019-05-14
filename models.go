@@ -23,17 +23,6 @@ type Account struct {
 	UserId		int	`gorm:"index;not null"`
 }
 
-type Card struct {
-	gorm.Model
-	Number			string
-	AccountId		int `gorm:"index;not null"`
-	Account			Account
-	Balance			float64
-	IsActive		bool
-	ExpirationDate	time.Time
-	LastTransaction	time.Time
-}
-
 type Tag struct {
 	gorm.Model
 	TransactionId	int	`gorm:"index;not null"`
