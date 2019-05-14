@@ -1,4 +1,4 @@
-# Pilot project of wealth ethic
+# Pilot project of Wealth Ethical
 
 This repository contains a golang backend for using in the pilot project of wealth ethic.
 I've used [gorilla/mux](https://github.com/gorilla/mux) for router and [jinzhu/gorm](https://github.com/jinzhu/gorm) for my database models and ORM.
