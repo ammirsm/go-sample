@@ -23,11 +23,6 @@ type Account struct {
 	UserId		int	`gorm:"index;not null"`
 }
 
-type Tag struct {
-	gorm.Model
-	TransactionId	int	`gorm:"index;not null"`
-	Name		string
-}
 
 
 // our initial migration function
