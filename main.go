@@ -30,7 +30,6 @@ func allCards(w http.ResponseWriter, r *http.Request) {
 	db.Preload("Account.User").Find(&cards)
 
 	for i,_ := range cards{
-
 		if cards[i].Account.UserId == int(user.ID){
 			all_cards = append(all_cards,cards[i])
 		}
