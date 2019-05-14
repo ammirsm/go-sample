@@ -41,6 +41,13 @@ type Transaction struct {
 	RawName		string
 	NormalizedName	string
 	Fee		float64
+	Tags	[]Tag	`gorm:"foreignkey:TransactionId"`
+}
+
+type Tag struct {
+	gorm.Model
+	TransactionId	int	`gorm:"index;not null"`
+	Name		string
 }
 
 // our initial migration function
@@ -49,8 +56,17 @@ func initialMigration() {
 	defer db.Close()
 
 	// Migrate the schema
-	db.AutoMigrate(&User{},&Account{},&Card{},&Transaction{})
+	db.AutoMigrate(&User{},&Account{},&Card{},&Transaction{}, &Tag{})
 	//initialSeedData()
+
+	var transaction Transaction
+	db.First(&transaction,1)
+	var tag Tag
+	tag = Tag{Name:"Coffee"}
+	db.Create(&tag)
+	transaction.Tags = append(transaction.Tags,tag)
+	db.Save(&transaction)
+
 }
 
 func openDb(db *gorm.DB) (*gorm.DB){

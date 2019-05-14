@@ -26,7 +26,7 @@ func allTransactions(w http.ResponseWriter, r *http.Request) {
 	var allTransactions []Transaction
 	var transactions []Transaction
 
-	db.Preload("Card").Find(&transactions)
+	db.Preload("Card").Preload("Tags").Find(&transactions)
 
 	//TODO: Should change this to some new query that get the cards from database
 	for i := range transactions{
@@ -48,7 +48,7 @@ func allCards(w http.ResponseWriter, r *http.Request) {
 	db.First(&user,User{Email:"amir.saiedmehr@gmail.com"})
 
 	var cards []Card
-	db.Preload("Account.User").Find(&cards)
+	db.Preload("Account.User").Preload("Tag").Find(&cards)
 
 
 	//TODO: Should change this to some new query that get the cards from database
@@ -70,6 +70,7 @@ func handleRequests() {
 	myRouter.HandleFunc("/", mainPage).Methods("GET")
 	myRouter.HandleFunc("/cards", allCards).Methods("GET")
 	myRouter.HandleFunc("/transactions/{card_id:[0-9]+}/", allTransactions).Methods("GET")
+	myRouter.HandleFunc("/transactions/add_tag/{transaction_id:[0-9]+}/", allTransactions).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8081", myRouter))
 }
 
