@@ -1,0 +1,24 @@
+# Pilot project of wealth ethic
+
+This repository contains a golang backend for using in the pilot project of wealth ethic.
+I've used [gorilla/mux](https://github.com/gorilla/mux) for router and [jinzhu/gorm](https://github.com/jinzhu/gorm) for my database models and ORM.
+
+## Preparation
+
+Use the default package manager for golang to prepare your environment for running the project.
+
+```bash
+go get github.com/jinzhu/gorm
+go get github.com/gorilla/mux
+```
+
+## Endpoints
+
+
+| resource      | description                       |
+|:--------------|:----------------------------------|
+| `/cards`      | returns a list of cards
+| `/transactions/add_tag/`    | add tag to transaction
+| `/transactions/delete_tag/{tag_id}` | delete a tag by its id |
+| `/transactions/{card_id}/`      | returns a list of transactions that related to a card |
+
