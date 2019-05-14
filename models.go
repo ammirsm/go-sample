@@ -24,7 +24,6 @@ type Account struct {
 }
 
 
-
 // our initial migration function
 func initialMigration() {
 	db = openDb(db)

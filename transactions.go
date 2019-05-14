@@ -23,6 +23,9 @@ type Transaction struct {
 
 
 func allTransactions(w http.ResponseWriter, r *http.Request) {
+	//TODO: Should handle date picker
+	//TODO: Should handle pagination
+
 	db = openDb(db)
 	defer db.Close()
 

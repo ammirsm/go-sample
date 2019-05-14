@@ -21,6 +21,8 @@ type Card struct {
 
 
 func allCards(w http.ResponseWriter, r *http.Request) {
+	//TODO: Should handle pagination
+
 	db = openDb(db)
 	defer db.Close()
 	var allCards []Card
