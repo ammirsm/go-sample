@@ -36,6 +36,7 @@ func initialMigration() {
 }
 
 func openDb(db *gorm.DB) (*gorm.DB){
+	//TODO:: Bring these configs to env file
 	new_db, err := gorm.Open("postgres", "host=localhost port=5432 user=amir dbname=wealth_ethical password=1234 sslmode=disable")
 	db = new_db
 	if err != nil {
