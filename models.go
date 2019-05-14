@@ -34,14 +34,6 @@ func initialMigration() {
 	db.AutoMigrate(&User{},&Account{},&Card{},&Transaction{}, &Tag{})
 	//initialSeedData()
 
-	var transaction Transaction
-	db.First(&transaction,1)
-	var tag Tag
-	tag = Tag{Name:"Coffee"}
-	db.Create(&tag)
-	transaction.Tags = append(transaction.Tags,tag)
-	db.Save(&transaction)
-
 }
 
 func openDb(db *gorm.DB) (*gorm.DB){
@@ -84,5 +76,12 @@ func initialSeedData()  {
 	})
 	db.First(&transaction,1)
 	fmt.Println(transaction)
+
+	db.First(&transaction,1)
+	var tag Tag
+	tag = Tag{Name:"Coffee"}
+	db.Create(&tag)
+	transaction.Tags = append(transaction.Tags,tag)
+	db.Save(&transaction)
 
 }
