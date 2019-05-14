@@ -29,6 +29,8 @@ func allCards(w http.ResponseWriter, r *http.Request) {
 	var cards []Card
 	db.Preload("Account.User").Find(&cards)
 
+
+	//TODO: Should change this to some new query that get the cards from database
 	for i,_ := range cards{
 		if cards[i].Account.UserId == int(user.ID){
 			all_cards = append(all_cards,cards[i])
