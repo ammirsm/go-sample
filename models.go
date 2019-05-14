@@ -9,6 +9,7 @@ import (
 
 var db *gorm.DB
 
+
 type User struct {
 	gorm.Model
 	Name		string
@@ -33,22 +34,12 @@ type Card struct {
 	LastTransaction	time.Time
 }
 
-type Transaction struct {
-	gorm.Model
-	CardId		int	`gorm:"index;not null"`
-	Card		Card
-	Date		time.Time
-	RawName		string
-	NormalizedName	string
-	Fee		float64
-	Tags	[]Tag	`gorm:"foreignkey:TransactionId"`
-}
-
 type Tag struct {
 	gorm.Model
 	TransactionId	int	`gorm:"index;not null"`
 	Name		string
 }
+
 
 // our initial migration function
 func initialMigration() {
