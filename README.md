@@ -17,7 +17,7 @@ go get github.com/gorilla/mux
 
 | resource      | description                       |
 |:--------------|:----------------------------------|
-| `/cards`      | returns a list of cards
+| `/cards`      | returns a list of cards (pass `from` and `limit` for pagination in query parameters)
 | `/transactions/add_tag/`    | add tag to transaction
 | `/transactions/delete_tag/{tag_id}` | delete a tag by its id |
 | `/transactions/{card_id}/`      | returns a list of transactions that related to a card |
