@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/jinzhu/gorm"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -21,7 +22,11 @@ type Card struct {
 
 
 func allCards(w http.ResponseWriter, r *http.Request) {
-	//TODO: Should handle pagination
+	fromInt64, _ := strconv.ParseInt(r.URL.Query().Get("from"), 0, 64)
+	limitInt64, _ := strconv.ParseInt(r.URL.Query().Get("limit"), 0, 64)
+	if int(limitInt64) == 0{
+		limitInt64 = 10
+	}
 
 	db = openDb(db)
 	defer db.Close()
@@ -32,8 +37,7 @@ func allCards(w http.ResponseWriter, r *http.Request) {
 	db.First(&user,User{Email:"amir.saiedmehr@gmail.com"})
 
 	var cards []Card
-	db.Preload("Account.User").Preload("Tag").Find(&cards)
-
+	db.Limit(int(limitInt64)).Offset(int(fromInt64)).Preload("Account.User").Find(&cards)
 
 	//TODO: Should change this to some new query that get the cards from database
 	for i := range cards{
