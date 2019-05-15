@@ -12,8 +12,8 @@ import (
 
 type Transaction struct {
 	gorm.Model
-	CardId		int	`gorm:"index;not null"`
-	Card		Card
+	AccountId		int	`gorm:"index;not null"`
+	Account		Account
 	Date		time.Time
 	RawName		string
 	NormalizedName	string
@@ -43,25 +43,35 @@ func allTransactions(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	vars := mux.Vars(r)
-	CardId := vars["card_id"]
-	CardIdInt, _ := strconv.ParseInt(CardId, 0, 64)
+	AccountId := vars["account_id"]
+	AccountIdInt, _ := strconv.ParseInt(AccountId, 0, 64)
 
-	var card Card
-	db.First(&card,int(CardIdInt))
+	var account Account
+	db.First(&account,int(AccountIdInt))
 
 	var allTransactions []Transaction
 	var transactions []Transaction
 
 	fromDate := time.Now().Add(-24 * time.Duration(fromDayAgo) * time.Hour)
 	toDate := fromDate.Add(-24 * time.Duration(limitDays) * time.Hour)
-	db.Limit(int(limitInt64)).Offset(int(fromInt64)).Preload("Card").Preload("Tags").Where("date BETWEEN ? AND ?", toDate, fromDate).Find(&transactions)
+	db.Limit(int(limitInt64)).Offset(int(fromInt64)).Preload("Account").Preload("Tags").Where("date BETWEEN ? AND ?", toDate, fromDate).Find(&transactions)
 
 	//TODO: Should change this to some new query that get the cards from database
 	for i := range transactions{
-		if transactions[i].CardId == int(card.ID){
+		if transactions[i].AccountId == int(account.ID){
 			allTransactions = append(allTransactions,transactions[i])
 		}
 	}
 
 	json.NewEncoder(w).Encode(allTransactions)
+}
+
+
+func (transaction *Transaction) AfterSave(tx *gorm.DB) (err error) {
+	var account Account
+	tx.First(&account,transaction.AccountId)
+	tx.Model(&account).Update("balance", account.Balance + transaction.Fee)
+	tx.Model(&account).Update("last_transaction", transaction.Date)
+	return
+
 }

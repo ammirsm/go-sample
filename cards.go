@@ -14,10 +14,8 @@ type Card struct {
 	Number			string
 	AccountId		int `gorm:"index;not null"`
 	Account			Account
-	Balance			float64
 	IsActive		bool
 	ExpirationDate	time.Time
-	LastTransaction	time.Time
 }
 
 
@@ -34,7 +32,8 @@ func allCards(w http.ResponseWriter, r *http.Request) {
 
 	//TODO: we should got user from token but I just mock this up
 	var user User
-	db.First(&user,User{Email:"amir.saiedmehr@gmail.com"})
+	db.First(&user,User{Email:"amir@fit-ro" +
+		".com"})
 
 	var cards []Card
 	db.Limit(int(limitInt64)).Offset(int(fromInt64)).Preload("Account.User").Find(&cards)

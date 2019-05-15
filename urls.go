@@ -12,6 +12,6 @@ func handleRequests() {
 	myRouter.HandleFunc("/cards", allCards).Methods("GET")
 	myRouter.HandleFunc("/transactions/add_tag/", addTagForTransactions).Methods("POST")
 	myRouter.HandleFunc("/transactions/delete_tag/{tag_id:[0-9]+}", deleteTagForTransactions).Methods("DELETE")
-	myRouter.HandleFunc("/transactions/{card_id:[0-9]+}/", allTransactions).Methods("GET")
+	myRouter.HandleFunc("/transactions/{account_id:[0-9]+}/", allTransactions).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8081", myRouter))
 }
