@@ -68,6 +68,7 @@ func allTransactions(w http.ResponseWriter, r *http.Request) {
 
 
 func (transaction *Transaction) AfterSave(tx *gorm.DB) (err error) {
+	//TODO:: It's not working ok, laggy update and give us wrong balance.
 	var account Account
 	tx.First(&account,transaction.AccountId)
 	tx.Model(&account).Update("balance", account.Balance + transaction.Fee)
