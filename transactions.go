@@ -23,8 +23,21 @@ type Transaction struct {
 
 
 func allTransactions(w http.ResponseWriter, r *http.Request) {
-	//TODO: Should handle date picker
-	//TODO: Should handle pagination
+
+	//Pagination of transactions
+	fromInt64, _ := strconv.ParseInt(r.URL.Query().Get("from"), 0, 64)
+	limitInt64, _ := strconv.ParseInt(r.URL.Query().Get("limit"), 0, 64)
+	if int(limitInt64) == 0 || limitInt64 > paginationLimit {
+		limitInt64 = paginationLimit
+	}
+
+
+	//Date picker
+	fromDayAgo, _ := strconv.ParseInt(r.URL.Query().Get("from_day"), 0, 64)
+	limitDays, _ := strconv.ParseInt(r.URL.Query().Get("limit_day"), 0, 64)
+	if int(limitDays) == 0 || limitDays > dateLimit{
+		limitDays = dateLimit
+	}
 
 	db = openDb(db)
 	defer db.Close()
@@ -39,7 +52,9 @@ func allTransactions(w http.ResponseWriter, r *http.Request) {
 	var allTransactions []Transaction
 	var transactions []Transaction
 
-	db.Preload("Card").Preload("Tags").Find(&transactions)
+	fromDate := time.Now().Add(-24 * time.Duration(fromDayAgo) * time.Hour)
+	toDate := fromDate.Add(-24 * time.Duration(limitDays) * time.Hour)
+	db.Limit(int(limitInt64)).Offset(int(fromInt64)).Preload("Card").Preload("Tags").Where("date BETWEEN ? AND ?", toDate, fromDate).Find(&transactions)
 
 	//TODO: Should change this to some new query that get the cards from database
 	for i := range transactions{

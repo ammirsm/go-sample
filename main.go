@@ -12,6 +12,10 @@ type JsonResponse struct {
 }
 
 
+var paginationLimit = int64(10)
+var dateLimit = int64(10)
+
+
 func mainPage(w http.ResponseWriter, r *http.Request){
 	fmt.Fprintf(w, "Hello world, this is wealth ethical API main page :)")
 }

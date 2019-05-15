@@ -24,8 +24,8 @@ type Card struct {
 func allCards(w http.ResponseWriter, r *http.Request) {
 	fromInt64, _ := strconv.ParseInt(r.URL.Query().Get("from"), 0, 64)
 	limitInt64, _ := strconv.ParseInt(r.URL.Query().Get("limit"), 0, 64)
-	if int(limitInt64) == 0 && int(limitInt64) > 10{
-		limitInt64 = 10
+	if int(limitInt64) == 0 || limitInt64 > paginationLimit {
+		limitInt64 = paginationLimit
 	}
 
 	db = openDb(db)
