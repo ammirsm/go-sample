@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-
+// TODO:: Account should change to cardID
 type Transaction struct {
 	gorm.Model
 	AccountId		int	`gorm:"index;not null"`
@@ -30,7 +30,6 @@ func allTransactions(w http.ResponseWriter, r *http.Request) {
 	if int(limitInt64) == 0 || limitInt64 > paginationLimit {
 		limitInt64 = paginationLimit
 	}
-
 
 	//Date picker
 	fromDayAgo, _ := strconv.ParseInt(r.URL.Query().Get("from_day"), 0, 64)
@@ -64,15 +63,4 @@ func allTransactions(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(allTransactions)
-}
-
-
-func (transaction *Transaction) AfterSave(tx *gorm.DB) (err error) {
-	//TODO:: It's not working ok, laggy update and give us wrong balance.
-	var account Account
-	tx.First(&account,transaction.AccountId)
-	tx.Model(&account).Update("balance", account.Balance + transaction.Fee)
-	tx.Model(&account).Update("last_transaction", transaction.Date)
-	return
-
 }

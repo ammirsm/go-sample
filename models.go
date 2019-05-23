@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"strconv"
 	"time"
 )
 
@@ -15,7 +16,7 @@ type User struct {
 	Name		string
 	Email		string  `gorm:"type:varchar(100);unique_index"`
 }
-
+//TODO:: We should relate accounts to multiple users [Account have one to many relation with User]
 type Account struct {
 	gorm.Model
 	Number		string
@@ -33,7 +34,7 @@ func initialMigration() {
 
 	// Migrate the schema
 	db.AutoMigrate(&User{},&Account{},&Card{},&Transaction{}, &Tag{})
-	initialSeedData()
+	//initialSeedData()
 
 }
 
@@ -51,7 +52,6 @@ func openDb(db *gorm.DB) (*gorm.DB){
 
 func initialSeedData()  {
 	db = openDb(db)
-
 
 	var user = User{Name: "Amir", Email: "amir@fit-ro.com"}
 	db.Create(&user)
@@ -83,7 +83,7 @@ func initialSeedData()  {
 		NormalizedName:"E-transfer Fee",
 		Fee:1.5,
 	}
-	db.Create(&transaction)
+	createTransaction(&transaction)
 
 	t, _ = time.Parse(time.RFC3339,"2019-04-01T09:20:04-07:00")
 	transaction = Transaction{
@@ -91,9 +91,10 @@ func initialSeedData()  {
 		Date:t,
 		RawName:"Vancouver Ice Cream",
 		NormalizedName:"Vancouver Ice Cream",
-		Fee:0,
+		Fee:2,
 	}
-	db.Create(&transaction)
+	createTransaction(&transaction)
+
 	var tag Tag
 	tag = Tag{Name:"Ice Cream"}
 	db.Create(&tag)
@@ -108,7 +109,7 @@ func initialSeedData()  {
 		NormalizedName:"Safeway",
 		Fee:0,
 	}
-	db.Create(&transaction)
+	createTransaction(&transaction)
 
 	t, _ = time.Parse(time.RFC3339,"2019-04-01T09:24:15-07:00")
 	transaction = Transaction{
@@ -118,7 +119,7 @@ func initialSeedData()  {
 		NormalizedName:"Burnaby Taxi",
 		Fee:0,
 	}
-	db.Create(&transaction)
+	createTransaction(&transaction)
 
 	t, _ = time.Parse(time.RFC3339,"2019-04-01T11:41:10-07:00")
 	transaction = Transaction{
@@ -128,7 +129,7 @@ func initialSeedData()  {
 		NormalizedName:"Purple Taxi",
 		Fee:-7.5,
 	}
-	db.Create(&transaction)
+	createTransaction(&transaction)
 
 	t, _ = time.Parse(time.RFC3339,"2019-04-01T12:57:06-07:00")
 	transaction = Transaction{
@@ -138,7 +139,7 @@ func initialSeedData()  {
 		NormalizedName:"Station Cafe",
 		Fee:-20.53,
 	}
-	db.Create(&transaction)
+	createTransaction(&transaction)
 
 	t, _ = time.Parse(time.RFC3339,"2019-04-01T16:01:38-07:00")
 	transaction = Transaction{
@@ -148,7 +149,7 @@ func initialSeedData()  {
 		NormalizedName:"Vancouver Gym",
 		Fee:-20.99,
 	}
-	db.Create(&transaction)
+	createTransaction(&transaction)
 
 	t, _ = time.Parse(time.RFC3339,"2019-04-01T16:40:30-07:00")
 	transaction = Transaction{
@@ -158,7 +159,7 @@ func initialSeedData()  {
 		NormalizedName:"TaxSoft",
 		Fee:-44.8,
 	}
-	db.Create(&transaction)
+	createTransaction(&transaction)
 
 	t, _ = time.Parse(time.RFC3339,"2019-04-01T16:40:30-07:00")
 	transaction = Transaction{
@@ -168,7 +169,7 @@ func initialSeedData()  {
 		NormalizedName:"Phones R Us",
 		Fee:-41.29,
 	}
-	db.Create(&transaction)
+	createTransaction(&transaction)
 
 	t, _ = time.Parse(time.RFC3339,"2019-04-02T09:50:29-07:00")
 	transaction = Transaction{
@@ -178,7 +179,7 @@ func initialSeedData()  {
 		NormalizedName:"The Hobby",
 		Fee:0,
 	}
-	db.Create(&transaction)
+	createTransaction(&transaction)
 
 	t, _ = time.Parse(time.RFC3339,"2019-04-02T11:43:11-07:00")
 	transaction = Transaction{
@@ -188,8 +189,17 @@ func initialSeedData()  {
 		NormalizedName:"DevTools",
 		Fee:-9.36,
 	}
-	db.Create(&transaction)
+	createTransaction(&transaction)
+
 
 	db.Close()
-
 }
+
+func createTransaction(transaction *Transaction) {
+	db.Exec(`INSERT  INTO "transactions" ("created_at","updated_at","deleted_at","account_id","date","raw_name","normalized_name","fee") VALUES (NOW(),NOW(),NULL,
+		`+ strconv.FormatInt(int64(transaction.Account.ID),10) + `1,NOW(),'`+ transaction.RawName + `','`+ transaction.NormalizedName + `',`+ strconv.FormatFloat(transaction.Fee,'f',6,64) + `) RETURNING "transactions"."id"
+	`)
+	db.Exec("UPDATE accounts SET balance = balance + (" + strconv.FormatFloat(transaction.Fee, 'f', 6, 64) +"), last_transaction = NOW() , updated_at= NOW() WHERE id=" + strconv.FormatInt(int64(transaction.Account.ID),10) + ";")
+}
+
+

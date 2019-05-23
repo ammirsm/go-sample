@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-
+//TODO:: We should relate cards to many accounts
 type Card struct {
 	gorm.Model
 	Number			string
