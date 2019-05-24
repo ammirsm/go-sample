@@ -7,12 +7,7 @@ I've used [gorilla/mux](https://github.com/gorilla/mux) for router and [jinzhu/g
 
 ## Preparation
 
-Use the default package manager for golang to prepare your environment for running the project.
-
-```bash
-go get github.com/jinzhu/gorm
-go get github.com/gorilla/mux
-```
+You can deploy this project with Godep :)
 
 ## Endpoints
 
