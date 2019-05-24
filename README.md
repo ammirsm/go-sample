@@ -1,5 +1,7 @@
 # Pilot project of Wealth Ethical
 
+This project is now accessible from [heroku](https://wealth-ethical.herokuapp.com). 
+
 This repository contains a golang backend for using in the pilot project of wealth ethical.
 I've used [gorilla/mux](https://github.com/gorilla/mux) for router and [jinzhu/gorm](https://github.com/jinzhu/gorm) for my database models and ORM.
 
