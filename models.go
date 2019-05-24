@@ -36,7 +36,7 @@ func initialMigration() {
 
 	// Migrate the schema
 	db.AutoMigrate(&User{},&Account{},&Card{},&Transaction{}, &Tag{})
-	initialSeedData()
+	//initialSeedData()
 
 }
 
