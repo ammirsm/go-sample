@@ -22,6 +22,6 @@ func mainPage(w http.ResponseWriter, r *http.Request){
 
 func main() {
 	fmt.Println("Server is up")
-	//initialMigration()
+	initialMigration()
 	handleRequests()
 }
