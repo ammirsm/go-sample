@@ -53,7 +53,7 @@ func allTransactions(w http.ResponseWriter, r *http.Request) {
 
 	fromDate := time.Now().Add(-24 * time.Duration(fromDayAgo) * time.Hour)
 	toDate := fromDate.Add(-24 * time.Duration(limitDays) * time.Hour)
-	db.Limit(int(limitInt64)).Offset(int(fromInt64)).Preload("Account").Preload("Tags").Where("date BETWEEN ? AND ?", toDate, fromDate).Find(&transactions)
+	db.Order("date desc").Limit(int(limitInt64)).Offset(int(fromInt64)).Preload("Account").Preload("Tags").Where("date BETWEEN ? AND ?", toDate, fromDate).Find(&transactions)
 
 	//TODO: Should change this to some new query that get the cards from database
 	for i := range transactions{
