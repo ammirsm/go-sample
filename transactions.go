@@ -64,3 +64,12 @@ func allTransactions(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(allTransactions)
 }
+
+
+func createTransaction(transaction *Transaction) {
+	db.Exec(`INSERT  INTO "transactions" ("created_at","updated_at","deleted_at","account_id","date","raw_name","normalized_name","fee") VALUES (NOW(),NOW(),NULL,
+		`+ strconv.FormatInt(int64(transaction.Account.ID),10) + `,NOW(),'`+ transaction.RawName + `','`+ transaction.NormalizedName + `',`+ strconv.FormatFloat(transaction.Fee,'f',6,64) + `) RETURNING "transactions"."id"
+	`)
+	db.Exec("UPDATE accounts SET balance = balance + (" + strconv.FormatFloat(transaction.Fee, 'f', 6, 64) +"), last_transaction = NOW() , updated_at= NOW() WHERE id=" + strconv.FormatInt(int64(transaction.Account.ID),10) + ";")
+}
+
