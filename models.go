@@ -46,7 +46,6 @@ func openDb(db *gorm.DB) (*gorm.DB){
 		fmt.Print(e)
 	}
 
-	//TODO:: Bring these configs to env file
 	username := os.Getenv("db_user")
 	password := os.Getenv("db_pass")
 	dbName := os.Getenv("db_name")
@@ -84,6 +83,7 @@ func initialSeedData()  {
 	var card = Card{
 		Number:"4539011500139075",
 		Account:account,
+		Type:"My Card Balance",
 		IsActive:true,
 		ExpirationDate:time.Date(2020, 2, 1, 12, 30, 0, 0, time.UTC),
 	}

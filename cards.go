@@ -16,6 +16,7 @@ type Card struct {
 	Account			Account
 	IsActive		bool
 	ExpirationDate	time.Time
+	Type			string
 }
 
 
