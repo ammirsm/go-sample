@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	"net/http"
@@ -51,9 +52,18 @@ func allTransactions(w http.ResponseWriter, r *http.Request) {
 	var allTransactions []Transaction
 	var transactions []Transaction
 
+	// just deployment
+	//fromDayAgo = 0
+	//limitDays = 1000
+
 	fromDate := time.Now().Add(-24 * time.Duration(fromDayAgo) * time.Hour)
 	toDate := fromDate.Add(-24 * time.Duration(limitDays) * time.Hour)
-	db.Order("date desc").Limit(int(limitInt64)).Offset(int(fromInt64)).Preload("Account").Preload("Tags").Where("date BETWEEN ? AND ?", toDate, fromDate).Find(&transactions)
+
+	fmt.Println(fromDate)
+	fmt.Println(toDate)
+
+
+	db.Order("date desc").Limit(int(limitInt64)).Offset(int(fromInt64)).Preload("Account").Preload("Tags").Where("account_id = " + AccountId).Where("date BETWEEN ? AND ?", toDate, fromDate).Find(&transactions)
 
 	//TODO: Should change this to some new query that get the cards from database
 	for i := range transactions{

@@ -12,8 +12,8 @@ type JsonResponse struct {
 }
 
 
-var paginationLimit = int64(10)
-var dateLimit = int64(10)
+var paginationLimit = int64(100)
+var dateLimit = int64(100)
 
 
 func mainPage(w http.ResponseWriter, r *http.Request){
